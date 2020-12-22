@@ -1,17 +1,16 @@
-#%% Leon Schulz
-
-# Note:
-# Some code was deselected by applying hashes.
-# Those code snippets titled 'ALTERNATIVE' show approaches that were attempted but not used in the final version of the code.
-# Other deselected code snippets 
-
 # 0.IMPORT 
-# 0.1. RELEVANT PACKAGES
+# 0.1. PACKAGES
+
+#seaborn
 import seaborn as sns
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import pingouin as pg
+import category_encoders as ce # Binary Encoding
+import xgboost as xgb # XGBoost
+
+# sklearn
 from sklearn.model_selection import train_test_split # Train Test Split
 from sklearn.impute import SimpleImputer # Imputation
 from sklearn.preprocessing import LabelEncoder # LabelEncoder
@@ -31,31 +30,18 @@ from sklearn.metrics import roc_auc_score  # ROC Score
 from sklearn.metrics import plot_roc_curve as plt_roc
 from sklearn.model_selection import GridSearchCV  # Hyperparameter Tuning
 from sklearn.model_selection import ShuffleSplit
+
+# scipy
 from scipy import stats
 from scipy.stats import sem
+
+#statsmodels
 import statsmodels.api as sm
 from statsmodels.stats.outliers_influence import variance_inflation_factor as vif # Variance Inflation Factor
 from statsmodels.tools.tools import add_constant # Add Constant
 import statsmodels.discrete.discrete_model as sm1
-import category_encoders as ce # Binary Encoding
-import xgboost as xgb # XGBoost
 
-
-# 0.2.  HELPER METHODS
-# 0.2.1. DETECT OUTLIERS
-outliers = []
-def detect_outlier(data_1):
-    threshold = 4
-    mean_1 = np.mean(data_1)
-    std_1 = np.std(data_1)
-
-    for y in data_1:
-        z_score = (y - mean_1)/std_1
-        if np.abs(z_score) > threshold:
-            outliers.append(y)
-    return outliers
-
-# 0.3. Import Data
+# 0.2. Import Data
 test = pd.read_csv(
     '', sep='\t')
 train = pd.read_csv(
@@ -77,6 +63,22 @@ upselling = np.where(upselling[0] == 1, 1, 0)
 # for i in range(10):
 # rnd = i
 # 80/20 split to train & validation for each variable
+
+###
+# 0.2.  HELPER METHODS
+# 0.2.1. DETECT OUTLIERS
+outliers = []
+def detect_outlier(data_1):
+    threshold = 4
+    mean_1 = np.mean(data_1)
+    std_1 = np.std(data_1)
+
+    for y in data_1:
+        z_score = (y - mean_1)/std_1
+        if np.abs(z_score) > threshold:
+            outliers.append(y)
+    return outliers
+###
 
 # 1.PREPROCESSING
 # 1.1. STRATIFIED SAMPLE
