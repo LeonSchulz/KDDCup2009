@@ -92,16 +92,20 @@ rnd = 10
 # Train/Test Split (80/20) for all three dependent variables
 X_train_chu, X_val_chu, chu_train, chu_val = train_test_split(
     train, churn, test_size=0.2, random_state=rnd, stratify=churn)
+
 X_train_app, X_val_app, app_train, app_val = train_test_split(
     train, appetency, test_size=0.2, random_state=rnd,stratify = appetency)
+
 X_train_up, X_val_up, up_train, up_val = train_test_split(
     train, upselling, test_size=0.2, random_state=rnd, stratify=upselling)
 
 # Transform dependent variables: Series -> Dataframe
 chu_train = pd.DataFrame(chu_train)
 chu_val = pd.DataFrame(chu_val)
+
 app_train = pd.DataFrame(app_train)
 app_val = pd.DataFrame(app_val)
+
 up_train = pd.DataFrame(up_train)
 up_val = pd.DataFrame(up_val)
 
@@ -164,28 +168,26 @@ for variable in X_train_chu.columns:
     if X_train_chu[variable].nunique() < 2:
        X_train_chu = X_train_chu.drop([variable], axis=1)
        X_val_chu = X_val_chu.drop([variable], axis=1)
+        
     if X_train_app[variable].nunique() < 2:
        X_train_app = X_train_app.drop([variable], axis=1)
        X_val_app = X_val_app.drop([variable], axis=1)
+        
     if X_train_up[variable].nunique() < 2:
        X_train_up = X_train_up.drop([variable], axis=1)
        X_val_up = X_val_up.drop([variable], axis=1)
 
 # Delete all columns with >90% missing values (train/val sets contain different variables)
-
-# chu
 for variable in X_train_chu.columns:
     if X_train_chu[variable].isna().sum()/len(X_train_chu[variable]) > 0.9:
        X_train_chu = X_train_chu.drop([variable], axis=1)
        X_val_chu = X_val_chu.drop([variable], axis=1)
 
-# app
 for variable in X_train_app.columns:
     if X_train_app[variable].isna().sum()/len(X_train_app[variable]) > 0.9:
        X_train_app = X_train_app.drop([variable], axis=1)
        X_val_app = X_val_app.drop([variable], axis=1)
-        
-#
+       
 for variable in X_train_up.columns:
     if X_train_up[variable].isna().sum()/len(X_train_up[variable]) > 0.9:
        X_train_up = X_train_up.drop([variable], axis=1)
@@ -230,6 +232,7 @@ X_val_up.loc[:, :var1] = X_val_up.loc[:, :var1].fillna(X_train_up.loc[:, :var1].
 X_train_chu = X_train_chu.reset_index()
 X_train_app = X_train_app.reset_index()
 X_train_up = X_train_up.reset_index()
+
 X_val_chu = X_val_chu.reset_index()
 X_val_app = X_val_app.reset_index()
 X_val_up = X_val_up.reset_index()
@@ -237,6 +240,7 @@ X_val_up = X_val_up.reset_index()
 X_train_chu = X_train_chu.drop(['index'],axis=1)
 X_train_app = X_train_app.drop(['index'], axis=1)
 X_train_up = X_train_up.drop(['index'], axis=1)
+
 X_val_chu = X_val_chu.drop(['index'],axis=1)
 X_val_app = X_val_app.drop(['index'], axis=1)
 X_val_up = X_val_up.drop(['index'], axis=1)
@@ -282,7 +286,6 @@ for variable in X_train_app.columns:
     if X_train_app.columns.get_loc(variable) > num1:
         counts = X_train_app.groupby([variable])[variable].count() / len(X_train_app)
         frequent_labels = [x for x in counts.loc[counts > threshlold].index.values]
-
         X_train_app[variable] = np.where(X_train_app[variable].isin(frequent_labels), X_train_app[variable], 'Rare')
         X_val_app[variable] = np.where(X_val_app[variable].isin(frequent_labels), X_val_app[variable], 'Rare')
 
@@ -290,7 +293,6 @@ for variable in X_train_up.columns:
     if X_train_up.columns.get_loc(variable) > num1:
         counts = X_train_up.groupby([variable])[variable].count() / len(X_train_up)
         frequent_labels = [x for x in counts.loc[counts > threshlold].index.values]
-
         X_train_up[variable] = np.where(X_train_up[variable].isin(frequent_labels), X_train_up[variable], 'Rare')
         X_val_up[variable] = np.where(X_val_up[variable].isin(frequent_labels), X_val_up[variable], 'Rare')
 
